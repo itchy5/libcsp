@@ -19,29 +19,9 @@
 #include <csp/drivers/usart.h>
 #include "kubos-hal/uart.h"
 #include <stdlib.h>
-#include <csp/arch/csp_thread.h>
 
 KUARTNum uart; /* global device num */
-
 usart_callback_t usart_callback;
-
-CSP_DEFINE_TASK(task_csp)
-{
-    portBASE_TYPE task_woken = pdFALSE;
-    uint8_t len = 0;
-    char csp_buf = 0;
-
-    while(1)
-    {
-        len = k_uart_read(uart, &csp_buf, 1);
-        if (usart_callback != NULL && len == 1)
-        {
-            usart_callback((uint8_t*)&csp_buf, 1, &task_woken);
-        }
-    }
-
-    return CSP_TASK_RETURN;
-}
 
 void usart_init(struct usart_conf *conf)
 {
@@ -50,7 +30,7 @@ void usart_init(struct usart_conf *conf)
     {
         return;
     }
-    
+
     /* set dev num */
     uart = (KUARTNum)*(conf->device);
 
@@ -64,12 +44,25 @@ void usart_init(struct usart_conf *conf)
             .tx_queue_len = YOTTA_CFG_HARDWARE_UARTDEFAULTS_TXQUEUELEN,
         };
 
-    /* initialize uart */
+    /* initialize kubos uart */
     k_uart_init(uart, &k_uart_conf);
+}
 
-    /* create csp thread to look for csp message */
-    csp_thread_handle_t handle_csp;
-    csp_thread_create(task_csp, "CSP", configMINIMAL_STACK_SIZE, NULL, 0, &handle_csp);
+void usart_init_default(void)
+{
+    /* set default device as char */
+    char dev = (char)YOTTA_CFG_HARDWARE_KISS_UART;
+
+    usart_conf conf = {
+        .device = &dev, /* pointer to device */
+        .baudrate = YOTTA_CFG_HARDWARE_UARTDEFAULTS_BAUDRATE,
+        .databits = YOTTA_CFG_HARDWARE_UARTDEFAULTS_WORDLEN,
+        .stopbits = YOTTA_CFG_HARDWARE_UARTDEFAULTS_STOPBITS,
+        .paritysetting = YOTTA_CFG_HARDWARE_UARTDEFAULTS_PARITY,
+    };
+
+    /* initialize */
+    usart_init(&conf);
 }
 
 void usart_set_callback(usart_callback_t callback)
