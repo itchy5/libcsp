@@ -68,6 +68,7 @@ add_library (csp STATIC
     $<$<BOOL:${XTEA}>:src/crypto/csp_xtea.c>
     $<$<BOOL:${CAN_SOCKETCAN}>:src/drivers/can/can_socketcan.c>
     $<$<AND:$<BOOL:${TARGET_LIKE_KUBOS_RT}>,$<BOOL:${YOTTA_CFG_CSP_USART}>>:src/drivers/usart/usart_kubos.c>
+    $<$<AND:$<BOOL:${TARGET_LIKE_KUBOS_RT}>,$<BOOL:${YOTTA_CFG_CSP_USART}>>:src/interfaces/csp_if_kubos.c>
     src/interfaces/csp_if_lo.c
     $<$<BOOL:${IF_KISS}>:src/interfaces/csp_if_kiss.c>
     src/rtable/csp_rtable_${RTABLE}.c

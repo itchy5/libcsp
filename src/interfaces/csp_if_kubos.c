@@ -18,11 +18,8 @@
 #include <csp/csp.h>
 #include <csp/drivers/usart.h>
 #include <stdlib.h>
-#include <csp/arch/csp_thread.h>
-
-#define MY_ADDRESS 1
-#define OTHER_ADDRESS 2
-#define MY_PORT 10
+#include <csp/interfaces/csp_if_kubos.h>
+#include <csp/interfaces/csp_if_kiss.h>
 
 /* static  CSP interface */
 static csp_iface_t csp_if_kiss;
@@ -70,26 +67,4 @@ void k_init_kiss_csp(void)
     /* set to route through KISS / UART */
     csp_route_set(OTHER_ADDRESS, &csp_if_kiss, CSP_NODE_MAC);
     csp_route_start_task(500, 1);
-
-    /* create high priority csp thread to look for csp message */
-    csp_thread_handle_t handle_csp;
-    csp_thread_create(task_csp, "CSP", configMINIMAL_STACK_SIZE, NULL, 0, &handle_csp);
-}
-
-CSP_DEFINE_TASK(task_csp)
-{
-    portBASE_TYPE task_woken = pdFALSE;
-    uint8_t len = 0;
-    char csp_buf = 0;
-
-    while(1)
-    {
-        len = k_uart_read(uart, &csp_buf, 1);
-        if (usart_callback != NULL && len == 1)
-        {
-            usart_callback((uint8_t*)&csp_buf, 1, &task_woken);
-        }
-    }
-
-    return CSP_TASK_RETURN;
 }

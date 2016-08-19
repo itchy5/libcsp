@@ -21,6 +21,10 @@
  * @{
  */
 
+ #define MY_ADDRESS 1
+ #define OTHER_ADDRESS 1
+ #define MY_PORT 10
+
 /* different driver types */
 typedef enum {
     CSP_KISS = 0,
