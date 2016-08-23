@@ -74,7 +74,7 @@ void usart_init(struct usart_conf *conf)
 void usart_init_default(void)
 {
     /* set default device as char */
-    char dev = (char)YOTTA_CFG_CSP_UART_BUS;
+    char dev = (char)YOTTA_CFG_CSP_USART_BUS;
 
     struct usart_conf conf = {
         .device = &dev, /* pointer to device */

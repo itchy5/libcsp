@@ -40,7 +40,7 @@ execute_process (COMMAND git describe --always
                  ERROR_QUIET)
 
 # check if we want KISS/USART
-if (YOTTA_CFG_CSP_USART)
+if (YOTTA_CFG_CSP_DRIVER_USART)
     # set flag
     set (CSP_USE_CRC32 ON)
     set (IF_KISS ON)
@@ -67,8 +67,7 @@ add_library (csp STATIC
     $<$<OR:$<BOOL:${HMAC}>,$<BOOL:${XTEA}>>:src/crypto/csp_sha1.c>
     $<$<BOOL:${XTEA}>:src/crypto/csp_xtea.c>
     $<$<BOOL:${CAN_SOCKETCAN}>:src/drivers/can/can_socketcan.c>
-    $<$<AND:$<BOOL:${TARGET_LIKE_KUBOS_RT}>,$<BOOL:${YOTTA_CFG_CSP_USART}>>:src/drivers/usart/usart_kubos.c>
-    $<$<AND:$<BOOL:${TARGET_LIKE_KUBOS_RT}>,$<BOOL:${YOTTA_CFG_CSP_USART}>>:src/interfaces/csp_if_kubos.c>
+    $<$<AND:$<BOOL:${TARGET_LIKE_KUBOS_RT}>,$<BOOL:${YOTTA_CFG_CSP_DRIVER_USART}>>:src/drivers/usart/usart_kubos.c>
     src/interfaces/csp_if_lo.c
     $<$<BOOL:${IF_KISS}>:src/interfaces/csp_if_kiss.c>
     src/rtable/csp_rtable_${RTABLE}.c
