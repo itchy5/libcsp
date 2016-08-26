@@ -59,11 +59,6 @@ struct usart_conf {
 void usart_init(struct usart_conf *conf);
 
 /**
- * Initialise UART with the default config
- */
-void usart_init_default(void);
-
-/**
  * In order to catch incoming chars use the callback.
  * Only one callback per interface.
  * @param handle usart[0,1,2,3]

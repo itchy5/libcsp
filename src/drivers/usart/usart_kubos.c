@@ -71,23 +71,6 @@ void usart_init(struct usart_conf *conf)
     csp_thread_create(task_csp, "CSP", configMINIMAL_STACK_SIZE, NULL, 0, &handle_csp);
 }
 
-void usart_init_default(void)
-{
-    /* set default device as char */
-    char dev = (char)YOTTA_CFG_CSP_USART_BUS;
-
-    struct usart_conf conf = {
-        .device = &dev, /* pointer to device */
-        .baudrate = YOTTA_CFG_HARDWARE_UARTDEFAULTS_BAUDRATE,
-        .databits = YOTTA_CFG_HARDWARE_UARTDEFAULTS_WORDLEN,
-        .stopbits = YOTTA_CFG_HARDWARE_UARTDEFAULTS_STOPBITS,
-        .paritysetting = YOTTA_CFG_HARDWARE_UARTDEFAULTS_PARITY,
-    };
-
-    /* initialize */
-    usart_init(&conf);
-}
-
 void usart_set_callback(usart_callback_t callback)
 {
     usart_callback = callback;
