@@ -22,7 +22,6 @@
 #include <csp/arch/csp_thread.h>
 
 KUARTNum uart; /* global device num */
-
 usart_callback_t usart_callback;
 
 CSP_DEFINE_TASK(task_csp)
@@ -64,12 +63,29 @@ void usart_init(struct usart_conf *conf)
             .tx_queue_len = YOTTA_CFG_HARDWARE_UART_DEFAULTS_TXQUEUELEN,
         };
 
-    /* initialize uart */
+    /* initialize kubos uart */
     k_uart_init(uart, &k_uart_conf);
 
-    /* create csp thread to look for csp message */
+    /* create high priority csp thread to look for csp message */
     csp_thread_handle_t handle_csp;
     csp_thread_create(task_csp, "CSP", configMINIMAL_STACK_SIZE, NULL, 0, &handle_csp);
+}
+
+void usart_init_default(void)
+{
+    /* set default device as char */
+    char dev = (char)YOTTA_CFG_CSP_USART_BUS;
+
+    struct usart_conf conf = {
+        .device = &dev, /* pointer to device */
+        .baudrate = YOTTA_CFG_HARDWARE_UARTDEFAULTS_BAUDRATE,
+        .databits = YOTTA_CFG_HARDWARE_UARTDEFAULTS_WORDLEN,
+        .stopbits = YOTTA_CFG_HARDWARE_UARTDEFAULTS_STOPBITS,
+        .paritysetting = YOTTA_CFG_HARDWARE_UARTDEFAULTS_PARITY,
+    };
+
+    /* initialize */
+    usart_init(&conf);
 }
 
 void usart_set_callback(usart_callback_t callback)
